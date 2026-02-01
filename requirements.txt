@@ -1,0 +1,12 @@
+# Web Scraping
+playwright==1.49.0
+
+# AWS Services
+boto3==1.34.34
+
+# HTTP Requests
+requests==2.31.0
+
+# Date/Time handling (included in Python standard library, but listed for reference)
+# datetime - built-in
+# hashlib - built-in

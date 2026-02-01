@@ -1,0 +1,35 @@
+1. SCRAPE_JOBS(url)
+   - Launch browser
+   - Navigate to URL
+   - Wait for job listings to load
+   - Extract all job elements
+   - For each job element:
+     - Extract: title, company, url, location
+     - Create job_id (hash of URL)
+     - Filter: only keep internships/co-ops
+   - Return list of jobs
+
+2. GET_ACTIVE_JOBS_FROM_DB(source)
+   - Query DynamoDB for all jobs where source=X AND status="active"
+   - Return list of active job_ids
+
+3. COMPARE_AND_UPDATE(scraped_jobs, db_jobs)
+   - NEW_JOBS = scraped_jobs NOT IN db_jobs
+   - EXISTING_JOBS = scraped_jobs AND IN db_jobs  
+   - REMOVED_JOBS = db_jobs NOT IN scraped_jobs
+   
+   - For NEW_JOBS:
+     - Insert into DynamoDB with status="active"
+     - Send Discord notification
+   
+   - For EXISTING_JOBS:
+     - Update "last_seen" timestamp in DynamoDB
+   
+   - For REMOVED_JOBS:
+     - Update status to "removed" in DynamoDB
+
+4. MAIN()
+   - For each job source:
+     - scraped_jobs = SCRAPE_JOBS(url)
+     - db_jobs = GET_ACTIVE_JOBS_FROM_DB(source)
+     - COMPARE_AND_UPDATE(scraped_jobs, db_jobs)
