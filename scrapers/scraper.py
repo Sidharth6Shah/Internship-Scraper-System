@@ -44,7 +44,7 @@ def scrape_COMPANY_jobs():
     # STEP 1: Launch Browser & Navigate
     # ============================================
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False) #True
+        browser = p.chromium.launch(headless=True) #Can set headless to false when testing
         page = browser.new_page()
         page.goto(url, wait_until='networkidle')
 
