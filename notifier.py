@@ -2,6 +2,7 @@
 Notifier - Handles Discord notifications for new job postings
 """
 import requests
+import time
 from config import DISCORD_WEBHOOK_URL
 
 
@@ -27,6 +28,8 @@ class Notifier:
         try:
             response = requests.post(self.webhook_url, json={"content": message})
             response.raise_for_status()
+            # Add delay to avoid Discord rate limiting (max 5 requests per 2 seconds)
+            time.sleep(0.5)
         except requests.exceptions.RequestException as e:
             print(f"Failed to send Discord notification: {e}")
 

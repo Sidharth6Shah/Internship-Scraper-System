@@ -44,7 +44,7 @@ def scrape_COMPANY_jobs():
     # STEP 1: Launch Browser & Navigate
     # ============================================
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False) #True
         page = browser.new_page()
         page.goto(url, wait_until='networkidle')
 
@@ -52,6 +52,11 @@ def scrape_COMPANY_jobs():
         # STEP 2: CUSTOM SCRAPING LOGIC
         # ============================================
         # TODO: Add your page-specific scraping logic here
+
+        # page.click('input')
+        # page.type('input', 'intern', delay=100)
+        # page.press('input', 'Enter')
+        # page.wait_for_load_state('networkidle')
 
         # Example template:
         # job_elements = page.query_selector_all('.job-listing')  # Update selector

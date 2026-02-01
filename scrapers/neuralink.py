@@ -24,17 +24,45 @@ def scrape_neuralink_jobs():
         page = browser.new_page()
         page.goto(url, wait_until='networkidle')
 
-        # ============================================
-        # TODO: Add your custom scraping logic here
-        # ============================================
-        # 1. Find job listing elements
-        # 2. Loop through each element
-        # 3. Extract: title, location, job_url
-        # 4. Filter for internships/co-ops only
-        # 5. Create job dictionary and append to jobs list
+        page.click('input')
+        page.type('input', 'intern', delay=100)
+        page.press('input', 'Enter')
+        page.wait_for_load_state('networkidle')
 
-        print("Browser opened - check your screen!")
-        time.sleep(10)  # Keep browser open for 10 seconds
+        # Get all job listing elements
+        job_elements = page.query_selector_all('ul > li')
+
+        for element in job_elements:
+            # Extract job information
+            title = element.query_selector('h4').inner_text()
+            location = element.query_selector('h5').inner_text()
+            job_url = element.query_selector('a').get_attribute('href')
+
+            # Make URL absolute if needed
+            if not job_url.startswith('http'):
+                job_url = f"https://neuralink.com{job_url}"
+
+            # Create job dictionary
+            job_id = hashlib.md5(job_url.encode()).hexdigest()
+            timestamp = datetime.utcnow().isoformat()
+
+            job = {
+                'job_id': job_id,
+                'title': title,
+                'company': company_name,
+                'location': location,
+                'url': job_url,
+                'source': source_id,
+                'status': 'active',
+                'first_seen': timestamp,
+                'last_seen': timestamp
+            }
+
+            jobs.append(job)
+            # print(f"Found: {title} - {location}")
+
+        print(f"\nTotal jobs found: {len(jobs)}")
+        time.sleep(5)  # Keep browser open for 5 seconds
 
         browser.close()
 
@@ -44,6 +72,6 @@ def scrape_neuralink_jobs():
 # For testing this scraper individually
 if __name__ == "__main__":
     result = scrape_neuralink_jobs()
-    print(f"Found {len(result)} internship(s)")
+    # print(f"Found {len(result)} internship(s)")
     for job in result:
         print(f"  - {job['title']} at {job['location']}")

@@ -23,8 +23,8 @@ class DBManager:
             dict: Dictionary mapping job_id to job item
         """
         response = self.table.scan(
-            FilterExpression='source = :source AND #status = :status',
-            ExpressionAttributeNames={'#status': 'status'},
+            FilterExpression='#source = :source AND #status = :status',
+            ExpressionAttributeNames={'#source': 'source', '#status': 'status'},
             ExpressionAttributeValues={':source': source_id, ':status': 'active'}
         )
         return {item['job_id']: item for item in response['Items']}

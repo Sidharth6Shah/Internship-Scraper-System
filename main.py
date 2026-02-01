@@ -4,7 +4,6 @@ Main Orchestrator - Coordinates scraping, database updates, and notifications
 from db_manager import DBManager
 from notifier import Notifier
 from config import JOB_SOURCES
-from scrapers.scraper import scrape_jobs
 
 
 def compare_and_update(scraped_jobs, source_id, db_manager, notifier):
@@ -65,8 +64,9 @@ def lambda_handler(event, context):
     for source in JOB_SOURCES:
         print(f"\n🔍 Scraping {source['company']}...")
 
-        # Scrape jobs
-        scraped_jobs = scrape_jobs(source['url'], source['company'], source['source_id'])
+        # Call the scraper function for this source
+        scraper_function = source['scraper_function']
+        scraped_jobs = scraper_function()
         print(f"Found {len(scraped_jobs)} internships")
 
         # Compare and update
