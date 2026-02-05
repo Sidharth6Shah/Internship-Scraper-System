@@ -1,21 +1,10 @@
-"""
-Main Orchestrator - Coordinates scraping, database updates, and notifications
-"""
+# Main Orchestration File
 from db_manager import DBManager
 from notifier import Notifier
 from config import JOB_SOURCES
 
 
 def compare_and_update(scraped_jobs, source_id, db_manager, notifier):
-    """
-    Compare scraped jobs with database and update accordingly
-
-    Args:
-        scraped_jobs (list): List of job dictionaries from scraper
-        source_id (str): Source identifier
-        db_manager (DBManager): Database manager instance
-        notifier (Notifier): Notifier instance
-    """
     # Get current active jobs from DB
     db_jobs = db_manager.get_active_jobs(source_id)
     db_job_ids = set(db_jobs.keys())
