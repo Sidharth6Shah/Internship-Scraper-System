@@ -1,1 +1,12 @@
+# AWS credentials
 aws
+
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
