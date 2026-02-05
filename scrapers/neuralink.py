@@ -20,7 +20,7 @@ def scrape_neuralink_jobs():
     source_id = "neuralink"
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False) #True
+        browser = p.chromium.launch(headless=True) #Keep True
         page = browser.new_page()
         page.goto(url, wait_until='networkidle')
 

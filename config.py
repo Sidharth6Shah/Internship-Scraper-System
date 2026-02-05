@@ -4,6 +4,7 @@
 
 # Import scraper functions
 from scrapers.neuralink import scrape_neuralink_jobs
+from scrapers.astrazeneca import scrape_astrazeneca_jobs
 
 # Discord webhook URL for notifications
 DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1467274396728299663/_558Bm4j7KWBDq0qJmW_meDbIT8bWJNEL0XLQS12WYXBOPnpZMz7rDuLc1QodiNxvn4b"
@@ -22,6 +23,12 @@ JOB_SOURCES = [
         "company": "Neuralink",
         "source_id": "neuralink"
     },
+    # {
+    #     "scraper_function": scrape_astrazeneca_jobs,
+    #     "company": "AstraZeneca",
+    #     "source_id": "astrazeneca"
+    # },
+    
     # Add more scrapers here as you build them
     # {
     #     "scraper_function": scrape_anthropic_jobs,
