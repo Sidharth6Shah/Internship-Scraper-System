@@ -50,8 +50,6 @@ def scrape_cohere_jobs():
                 # print("Job location:", location)
                 # job_url = element.query_selector('div._departments_12ylk_345 > div > a').get_attribute('href')
                 job_url = element.evaluate('el => el.parentElement.parentElement.querySelector("a").href')
-                # if not job_url.startswith('http'):
-                #     job_url = f"https://cohere.com{job_url}"
                 # Create job dictionary
                 job_id = hashlib.md5(job_url.encode()).hexdigest()
                 timestamp = datetime.utcnow().isoformat()           
@@ -73,7 +71,7 @@ def scrape_cohere_jobs():
             # print(f"Found: {title} - {location}")
 
         print(f"\nTotal jobs found: {len(jobs)}")
-        time.sleep(5)  # Keep browser open for 5 seconds
+        # time.sleep(5)  # Keep browser open for 5 seconds
 
         browser.close()
 
