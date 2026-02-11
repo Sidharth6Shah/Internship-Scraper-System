@@ -37,7 +37,7 @@ def scrape_genentech_jobs():
     # STEP 1: Launch Browser & Navigate
     # ============================================
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False) #Can set headless to false when testing
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto(url, wait_until='networkidle')
 
@@ -61,8 +61,7 @@ def scrape_genentech_jobs():
             print("Title:", title)
             location = element.query_selector('div > div > p > span > span').inner_text()
             print("Location:", location)
-            # job_url = element.query_selector('a').get_attribute('href')
-            job_url = "https://careers.gene.com/us/en"
+            job_url = element.query_selector('a').get_attribute('href')
             print("Job URL:", job_url)
 
             job_id = hashlib.md5(job_url.encode()).hexdigest()
@@ -86,9 +85,8 @@ def scrape_genentech_jobs():
             if not nextButton:
                 break
             parent_li = page.query_selector('li:nth-child(7)')
-            # if parent_li and 'disabled' in (parent_li.get_attribute('class') or ''):
             if not nextButton.is_visible():
-                break  # We're on the last page
+                break  # On the last page
             print("nextButton:", nextButton.inner_text())
             nextButton.click()
             page.wait_for_load_state('networkidle')
