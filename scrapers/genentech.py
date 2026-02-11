@@ -6,7 +6,7 @@ from datetime import datetime
 import hashlib
 
 
-def scrape_COMPANY_jobs():
+def scrape_genentech_jobs():
     """
     Scrape jobs from [COMPANY NAME] careers page
 
@@ -37,65 +37,94 @@ def scrape_COMPANY_jobs():
     # STEP 1: Launch Browser & Navigate
     # ============================================
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True) #Can set headless to false when testing
+        browser = p.chromium.launch(headless=False) #Can set headless to false when testing
         page = browser.new_page()
         page.goto(url, wait_until='networkidle')
 
-        # ============================================
-        # STEP 2: CUSTOM SCRAPING LOGIC
-        # ============================================
-        # TODO: Add your page-specific scraping logic here
+        #Accept all popup
+        if page.query_selector('#onetrust-accept-btn-handler'):
+            page.click('#onetrust-accept-btn-handler')
+            page.wait_for_timeout(1000)
 
-        # page.click('input')
-        # page.type('input', 'intern', delay=100)
-        # page.press('input', 'Enter')
-        # page.wait_for_load_state('networkidle')
+        page.wait_for_selector('#typehead')
+        page.click('#typehead')
+        page.fill('#typehead', 'intern')
+        page.press('#typehead', 'Enter')
+        page.wait_for_load_state('networkidle')
+        page.wait_for_selector('div.content-block.au-target.phw-content-block-nd > ul > li')
+        
+        #Scrape first page
+        job_elements = page.query_selector_all('div.content-block.au-target.phw-content-block-nd > ul > li')
+        for element in job_elements:
+            print("Entering for element loop")
+            title = element.query_selector('div > div > span > a > div > span').inner_text()
+            print("Title:", title)
+            location = element.query_selector('div > div > p > span > span').inner_text()
+            print("Location:", location)
+            # job_url = element.query_selector('a').get_attribute('href')
+            job_url = "https://careers.gene.com/us/en"
+            print("Job URL:", job_url)
 
-        # Example template:
-        # job_elements = page.query_selector_all('.job-listing')  # Update selector
-        #
-        # for element in job_elements:
-        #     # Extract job information
-        #     title = element.query_selector('.title').inner_text()  # Update selector
-        #     location = element.query_selector('.location').inner_text()  # Update selector
-        #     job_url = element.query_selector('a').get_attribute('href')  # Update selector
-        #
-        #     # Make URL absolute if needed
-        #     if not job_url.startswith('http'):
-        #         job_url = f"https://example.com{job_url}"
-        #
-        #     # STEP 3: Filter for internships/co-ops only
-        #     if 'intern' in title.lower() or 'co-op' in title.lower():
-        #
-        #         # STEP 4: Create job dictionary
-        #         job_id = hashlib.md5(job_url.encode()).hexdigest()
-        #         timestamp = datetime.utcnow().isoformat()
-        #
-        #         job = {
-        #             'job_id': job_id,
-        #             'title': title,
-        #             'company': company_name,
-        #             'location': location,
-        #             'url': job_url,
-        #             'source': source_id,
-        #             'status': 'active',
-        #             'first_seen': timestamp,
-        #             'last_seen': timestamp
-        #         }
-        #
-        #         jobs.append(job)
+            job_id = hashlib.md5(job_url.encode()).hexdigest()
+            timestamp = datetime.utcnow().isoformat()
 
-        # ============================================
-        # STEP 5: Cleanup
-        # ============================================
+            job = {
+                'job_id': job_id,
+                'title': title,
+                'company': company_name,
+                'location': location,
+                'url': job_url,
+                'source': source_id,
+                'status': 'active',
+                'first_seen': timestamp,
+                'last_seen': timestamp
+            }
+            jobs.append(job)
+
+        while True:
+            nextButton = page.query_selector('li:nth-child(7) > a > span:nth-child(1) > ppc-content')
+            if not nextButton:
+                break
+            parent_li = page.query_selector('li:nth-child(7)')
+            # if parent_li and 'disabled' in (parent_li.get_attribute('class') or ''):
+            if not nextButton.is_visible():
+                break  # We're on the last page
+            print("nextButton:", nextButton.inner_text())
+            nextButton.click()
+            page.wait_for_load_state('networkidle')
+            page.wait_for_selector('div.content-block.au-target.phw-content-block-nd > ul > li')
+            job_elements = page.query_selector_all('div.content-block.au-target.phw-content-block-nd > ul > li')
+            for element in job_elements:
+                print("Entering for element loop")
+                title = element.query_selector('div > div > span > a > div > span').inner_text()
+                print("Title:", title)
+                location = element.query_selector('div > div > p > span > span').inner_text()
+                print("Location:", location)
+                job_url = "https://careers.gene.com/us/en"
+                print("Job URL:", job_url)
+
+                job_id = hashlib.md5(job_url.encode()).hexdigest()
+                timestamp = datetime.utcnow().isoformat()
+
+                job = {
+                    'job_id': job_id,
+                    'title': title,
+                    'company': company_name,
+                    'location': location,
+                    'url': job_url,
+                    'source': source_id,
+                    'status': 'active',
+                    'first_seen': timestamp,
+                    'last_seen': timestamp
+                }
+                jobs.append(job)
         browser.close()
-
     return jobs
 
 
 # For testing this scraper individually
 if __name__ == "__main__":
-    result = scrape_COMPANY_jobs()
+    result = scrape_genentech_jobs()
     print(f"Found {len(result)} internship(s)")
     for job in result:
         print(f"  - {job['title']} at {job['location']}")
