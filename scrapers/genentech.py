@@ -56,13 +56,9 @@ def scrape_genentech_jobs():
         #Scrape first page
         job_elements = page.query_selector_all('div.content-block.au-target.phw-content-block-nd > ul > li')
         for element in job_elements:
-            print("Entering for element loop")
             title = element.query_selector('div > div > span > a > div > span').inner_text()
-            print("Title:", title)
             location = element.query_selector('div > div > p > span > span').inner_text()
-            print("Location:", location)
             job_url = element.query_selector('a').get_attribute('href')
-            print("Job URL:", job_url)
 
             job_id = hashlib.md5(job_url.encode()).hexdigest()
             timestamp = datetime.utcnow().isoformat()
@@ -87,20 +83,15 @@ def scrape_genentech_jobs():
             parent_li = page.query_selector('li:nth-child(7)')
             if not nextButton.is_visible():
                 break  # On the last page
-            print("nextButton:", nextButton.inner_text())
             nextButton.click()
             page.wait_for_load_state('networkidle')
             page.wait_for_selector('div.content-block.au-target.phw-content-block-nd > ul > li')
             job_elements = page.query_selector_all('div.content-block.au-target.phw-content-block-nd > ul > li')
             for element in job_elements:
-                print("Entering for element loop")
                 title = element.query_selector('div > div > span > a > div > span').inner_text()
-                print("Title:", title)
                 location = element.query_selector('div > div > p > span > span').inner_text()
-                print("Location:", location)
                 job_url = "https://careers.gene.com/us/en"
-                print("Job URL:", job_url)
-
+                
                 job_id = hashlib.md5(job_url.encode()).hexdigest()
                 timestamp = datetime.utcnow().isoformat()
 
