@@ -6,6 +6,7 @@ load_dotenv()
 from scrapers.neuralink import scrape_neuralink_jobs
 from scrapers.astrazeneca import scrape_astrazeneca_jobs
 from scrapers.cohere import scrape_cohere_jobs
+from scrapers.genentech import scrape_genentech_jobs
 
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 DYNAMODB_TABLE_NAME = os.getenv("DYNAMODB_TABLE_NAME")
@@ -24,6 +25,11 @@ JOB_SOURCES = [
         "scraper_function": scrape_cohere_jobs,
         "company": "Cohere",
         "source_id": "cohere"
+    },
+    {
+        "scraper_function": scrape_genentech_jobs,
+        "company": "Genentech",
+        "source_id": "genentech"
     },
     # {
     #     "scraper_function": scrape_astrazeneca_jobs,
