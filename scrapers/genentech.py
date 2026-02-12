@@ -90,7 +90,7 @@ def scrape_genentech_jobs():
             for element in job_elements:
                 title = element.query_selector('div > div > span > a > div > span').inner_text()
                 location = element.query_selector('div > div > p > span > span').inner_text()
-                job_url = "https://careers.gene.com/us/en"
+                job_url = element.query_selector('a').get_attribute('href')
                 
                 job_id = hashlib.md5(job_url.encode()).hexdigest()
                 timestamp = datetime.utcnow().isoformat()
