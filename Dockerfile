@@ -6,7 +6,6 @@ RUN pip install --no-cache-dir \
     boto3==1.34.34 \
     requests==2.31.0 \
     python-dotenv
-    # psycopg2-binary
 
 #Playwright dependencies to install
 RUN playwright install chromium
