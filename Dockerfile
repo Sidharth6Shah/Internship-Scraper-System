@@ -14,6 +14,7 @@ RUN playwright install-deps chromium
 #Copy the code
 COPY main.py config.py db_manager.py notifier.py ${LAMBDA_TASK_ROOT}/
 COPY scrapers/ ${LAMBDA_TASK_ROOT}/scrapers/
+#Test change
 
 #Set lambda function to run
 CMD ["main.lambda_handler"]
