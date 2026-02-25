@@ -421,6 +421,7 @@ For issues:
 
 - General flow:
     - Run deploy.sh to generate an image (3 entries) to ECR repo
+        * Make sure docker desktop is running.*
     - Deploy the new image to Lambda
         - Out of the 3 recent images, SELECT THE MIDDLE ONE. This is the manifest. The index and metadata are not valid for deployment.
     - Test and check cloutdwatch logs
