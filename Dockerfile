@@ -1,4 +1,12 @@
-FROM public.ecr.aws/lambda/python:3.11
+FROM public.ecr.aws/lambda/python:3.12
+
+#Install system dependencies for Chromium
+RUN dnf install -y \
+    atk cups-libs gtk3 libXcomposite alsa-lib \
+    libXcursor libXdamage libXext libXi libXrandr libXScrnSaver \
+    libXtst pango at-spi2-atk libXt xorg-x11-server-Xvfb \
+    xorg-x11-xauth dbus-glib dbus-glib-devel nss mesa-libgbm && \
+    dnf clean all
 
 #Python dependencies to install
 RUN pip install --no-cache-dir \
@@ -9,11 +17,11 @@ RUN pip install --no-cache-dir \
 
 #Playwright dependencies to install
 RUN playwright install chromium
-RUN playwright install-deps chromium
 
 #Copy the code
 COPY main.py config.py db_manager.py notifier.py ${LAMBDA_TASK_ROOT}/
 COPY scrapers/ ${LAMBDA_TASK_ROOT}/scrapers/
+RUN chmod -R 755 ${LAMBDA_TASK_ROOT}
 
 #Set lambda function to run
 CMD ["main.lambda_handler"]

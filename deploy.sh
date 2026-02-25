@@ -3,7 +3,7 @@ set -e
 
 #AWS Lambda Deployment Script
 #Configuration
-AWS_REGION="us-east-1"
+AWS_REGION="us-east-2"
 FUNCTION_NAME="internship-scraper"
 ECR_REPO_NAME="internship-scraper"
 IMAGE_TAG="latest"
@@ -13,8 +13,8 @@ if [ -z "$AWS_ACCOUNT_ID" ]; then
     exit 1
 fi
 
-#Package the code into a container
-docker build -t ${FUNCTION_NAME}:${IMAGE_TAG} .
+#Package the code into a container (x86_64 only, no multi-platform index)
+docker build --platform linux/amd64 -t ${FUNCTION_NAME}:${IMAGE_TAG} .
 
 #Log into ECR
 aws ecr get-login-password --region ${AWS_REGION} | \
@@ -24,8 +24,6 @@ docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REG
 aws ecr describe-repositories --repository-names ${ECR_REPO_NAME} --region ${AWS_REGION} > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     aws ecr create-repository --repository-name ${ECR_REPO_NAME} --region ${AWS_REGION}
-else
-    # aws ecr batch-delete-image --repository-name ${ECR_REPO_NAME} --image-ids $(aws ecr list-images --repository-name ${ECR_REPO_NAME} --query 'imageIds[*]' --output json) --region ${AWS_REGION}
 fi
 
 #Label package
