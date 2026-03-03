@@ -8,7 +8,9 @@ Instructions:
 4. Fill in custom scraping logic in STEP 2
 5. Add the scraper to config.py JOB_SOURCES
 """
-from playwright.sync_api import sync_playwright
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from datetime import datetime
 import hashlib
 
@@ -43,38 +45,38 @@ def scrape_COMPANY_jobs():
     # ============================================
     # STEP 1: Launch Browser & Navigate
     # ============================================
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True) #Can set headless to false when testing
-        page = browser.new_page()
-        page.goto(url, wait_until='networkidle')
+    chrome_options = Options()
+    chrome_options.add_argument('--headless=new')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--single-process')
+    chrome_options.add_argument('--disable-dev-tools')
+    chrome_options.add_argument('--no-zygote')
+    chrome_options.binary_location = '/opt/chrome/chrome-linux64/chrome'
+
+    driver = webdriver.Chrome(
+        options=chrome_options,
+        service=webdriver.ChromeService(executable_path='/opt/chromedriver')
+    )
+
+    try:
+        driver.get(url)
 
         # ============================================
         # STEP 2: CUSTOM SCRAPING LOGIC
         # ============================================
         # TODO: Add your page-specific scraping logic here
 
-        # page.click('input')
-        # page.type('input', 'intern', delay=100)
-        # page.press('input', 'Enter')
-        # page.wait_for_load_state('networkidle')
+        # Example: Get all job listing elements
+        # job_elements = driver.find_elements(By.CSS_SELECTOR, 'ul > li')
 
-        # Example template:
-        # job_elements = page.query_selector_all('.job-listing')  # Update selector
-        #
         # for element in job_elements:
-        #     # Extract job information
-        #     title = element.query_selector('.title').inner_text()  # Update selector
-        #     location = element.query_selector('.location').inner_text()  # Update selector
-        #     job_url = element.query_selector('a').get_attribute('href')  # Update selector
+        #     try:
+        #         title = element.find_element(By.TAG_NAME, 'h4').text
+        #         location = element.find_element(By.TAG_NAME, 'h5').text
+        #         job_url = element.find_element(By.TAG_NAME, 'a').get_attribute('href')
         #
-        #     # Make URL absolute if needed
-        #     if not job_url.startswith('http'):
-        #         job_url = f"https://example.com{job_url}"
-        #
-        #     # STEP 3: Filter for internships/co-ops only
-        #     if 'intern' in title.lower() or 'co-op' in title.lower():
-        #
-        #         # STEP 4: Create job dictionary
         #         job_id = hashlib.md5(job_url.encode()).hexdigest()
         #         timestamp = datetime.utcnow().isoformat()
         #
@@ -91,11 +93,14 @@ def scrape_COMPANY_jobs():
         #         }
         #
         #         jobs.append(job)
+        #     except Exception as e:
+        #         print(f"Error extracting job: {e}")
+        #         continue
 
-        # ============================================
-        # STEP 5: Cleanup
-        # ============================================
-        browser.close()
+        print(f"\nTotal jobs found: {len(jobs)}")
+
+    finally:
+        driver.quit()
 
     return jobs
 
