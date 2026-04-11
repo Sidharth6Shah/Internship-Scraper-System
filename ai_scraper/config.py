@@ -5,7 +5,7 @@ load_dotenv()
 
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 DYNAMODB_TABLE_NAME = os.getenv("DYNAMODB_TABLE_NAME")
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 AI_JOB_SOURCES = [
     {
@@ -14,35 +14,31 @@ AI_JOB_SOURCES = [
         "source_id": "neuralink_ai"
     },
     {
-        "url": "https://cohere.com/careers",
+        "url": "https://jobs.ashbyhq.com/cohere",
         "company": "Cohere",
         "source_id": "cohere_ai"
     },
     {
-        "url": "https://www.gene.com/careers",
+        "url": "https://careers.gene.com/us/en",
         "company": "Genentech",
-        "source_id": "genentech_ai"
+        "source_id": "genentech_ai",
+        "requires_search": True
     },
     {
-        "url": "https://www.anthropic.com/careers",
+        "url": "https://www.anthropic.com/careers/jobs",
         "company": "Anthropic",
         "source_id": "anthropic_ai"
     },
     {
-        "url": "https://openai.com/careers/",
+        "url": "https://openai.com/careers/search/",
         "company": "OpenAI",
         "source_id": "openai_ai"
     },
     {
-        "url": "https://www.deepmind.com/careers",
+        "url": "https://job-boards.greenhouse.io/deepmind",
         "company": "DeepMind",
         "source_id": "deepmind_ai"
-    },
-    {
-        "url": "https://scale.com/careers",
-        "company": "Scale AI",
-        "source_id": "scale_ai"
     }
 ]
 
-KEYWORDS = ["intern", "co-op", "co op", "student"]
+KEYWORDS = ["intern", "co-op", "co op", "coop", "student"]
