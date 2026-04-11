@@ -1,3 +1,4 @@
+import time
 from db_manager import DBManager
 from notifier import Notifier
 from ai_scraper.config import AI_JOB_SOURCES
@@ -38,17 +39,23 @@ def lambda_handler(event, context):
     db_manager = DBManager()
     notifier = Notifier()
 
-    for source in AI_JOB_SOURCES:
+    for i, source in enumerate(AI_JOB_SOURCES):
         print(f"\n🔍 Scraping {source['company']}...")
 
         scraped_jobs = scrape_jobs(
             url=source['url'],
             company=source['company'],
-            source_id=source['source_id']
+            source_id=source['source_id'],
+            requires_search=source.get('requires_search', False)
         )
 
         print(f"Found {len(scraped_jobs)} internships")
         compare_and_update(scraped_jobs, source['source_id'], db_manager, notifier)
+
+        # Wait 60 seconds between companies to avoid rate limiting (except after last company)
+        if i < len(AI_JOB_SOURCES) - 1:
+            print("⏱️  Waiting 60 seconds to avoid rate limits...")
+            time.sleep(60)
 
     return {"statusCode": 200, "body": "AI Scraping complete"}
 
