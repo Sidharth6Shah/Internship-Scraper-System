@@ -1,6 +1,6 @@
 import boto3
 from datetime import datetime
-from config import DYNAMODB_TABLE_NAME
+from ai_scraper.config import DYNAMODB_TABLE_NAME
 
 
 class DBManager:
