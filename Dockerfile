@@ -35,7 +35,7 @@ RUN dnf install -y wget unzip && \
 
 # Copy the code
 COPY ai_scraper/ ${LAMBDA_TASK_ROOT}/ai_scraper/
-COPY db_manager.py notifier.py config.py ${LAMBDA_TASK_ROOT}/
+COPY db_manager.py notifier.py ${LAMBDA_TASK_ROOT}/
 RUN chmod -R 755 ${LAMBDA_TASK_ROOT}
 
 # Set lambda function to run
