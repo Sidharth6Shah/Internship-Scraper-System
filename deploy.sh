@@ -14,7 +14,7 @@ if [ -z "$AWS_ACCOUNT_ID" ]; then
 fi
 
 #Package the code into a container (x86_64 only, no multi-platform index)
-docker build --platform linux/amd64 -t ${FUNCTION_NAME}:${IMAGE_TAG} .
+docker build --platform linux/amd64 --provenance=false --output=type=docker -t ${FUNCTION_NAME}:${IMAGE_TAG} .
 
 #Log into ECR
 aws ecr get-login-password --region ${AWS_REGION} | \
