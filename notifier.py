@@ -1,7 +1,7 @@
 # Notification module
 import requests
 import time
-from config import DISCORD_WEBHOOK_URL
+from ai_scraper.config import DISCORD_WEBHOOK_URL
 
 
 class Notifier:
